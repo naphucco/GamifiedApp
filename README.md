@@ -60,3 +60,7 @@ npx react-native run-android
 Nếu app không tự mở → vào emulator, tìm app GamifiedApp và mở thủ công.
 
 Metro bundler phải chạy ở port 8081.
+
+# 3. Reset cache
+npx react-native start --reset-cache
+npx react-native run-android

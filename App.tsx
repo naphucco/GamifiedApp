@@ -1,47 +1,32 @@
-import React, { useState } from 'react';
-import { StatusBar, StyleSheet, useColorScheme, View, Text, Button } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from 'react';
+import { StatusBar, useColorScheme } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { HomeScreen } from './src/screens/HomeScreen';
+
+const Stack = createNativeStackNavigator();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === 'dark'; // trả về chế độ màu hiện tại của hệ thống
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+    // Đảm bảo nội dung được hiển thị trong vùng an toàn (safe area) của thiết bị, tránh bị che bởi notch, status bar, hoặc cạnh bo tròn.
+    <SafeAreaProvider>  
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />      
+      <NavigationContainer>                                         {/* Thành phần gốc của React Navigation, quản lý trạng thái điều hướng toàn app. */}
+        {/* dạng ngăn xếp màn hình */}
+        <Stack.Navigator                                            
+          screenOptions={{
+            headerShown: false,
+            animation: 'fade_from_bottom'
+          }}
+        >
+          <Stack.Screen name="Home" component={HomeScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-  const [score, setScore] = useState(0);
-
-  return (
-    <View style={[styles.container, { paddingTop: safeAreaInsets.top }]}>
-      <Text style={styles.title}>🎮 Gamified App</Text>
-      <Text style={styles.score}>Điểm của bạn: {score}</Text>
-      <Button title="Tăng điểm" onPress={() => setScore(score + 1)} />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f4f7',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  score: {
-    fontSize: 22,
-    marginBottom: 20,
-  },
-});
 
 export default App;
