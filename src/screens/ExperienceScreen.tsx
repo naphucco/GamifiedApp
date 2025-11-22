@@ -17,7 +17,7 @@ export const ExperienceScreen = () => {
     },
     {
       id: 2,
-      year: '2022 - 2024', 
+      year: '2022 - 2024',
       title: 'Mid-level Mobile Developer',
       company: 'Công Ty FinTech',
       description: 'Phát triển ứng dụng ngân hàng số, payment gateway',
@@ -48,10 +48,14 @@ export const ExperienceScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>📜 Career Journey</Text>
       <Text style={styles.subtitle}>Hành trình từ Fresher đến Senior</Text>
-      
+
       <ScrollView style={styles.timelineContainer}>
         {experiences.map((exp, index) => (
-          <View key={exp.id} style={styles.timelineItem}>
+          <TouchableOpacity
+            key={exp.id}
+            style={styles.timelineItem}
+            onPress={() => navigation.navigate('ExperienceDetail', { experience: exp })}
+          >
             {/* TIMELINE DOT & LINE */}
             <View style={styles.timelineLeft}>
               <View style={styles.timelineDot} />
@@ -59,14 +63,14 @@ export const ExperienceScreen = () => {
                 <View style={styles.timelineLine} />
               )}
             </View>
-            
+
             {/* CONTENT */}
             <View style={styles.timelineContent}>
               <Text style={styles.year}>{exp.year}</Text>
               <Text style={styles.jobTitle}>{exp.title}</Text>
               <Text style={styles.company}>{exp.company}</Text>
               <Text style={styles.description}>{exp.description}</Text>
-              
+
               <View style={styles.techStack}>
                 {exp.tech.map((tech, techIndex) => (
                   <View key={techIndex} style={styles.techTag}>
@@ -74,16 +78,19 @@ export const ExperienceScreen = () => {
                   </View>
                 ))}
               </View>
-              
+
               <View style={styles.expBadge}>
                 <Text style={styles.expText}>+{exp.expReward} EXP</Text>
               </View>
+
+              {/* THÊM HINT NHẤP ĐỂ XEM CHI TIẾT */}
+              <Text style={styles.detailHint}>👉 Nhấp để xem thống kê chi tiết</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
@@ -209,5 +216,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  detailHint: {
+    fontSize: 12,
+    color: '#8d99ae',
+    fontStyle: 'italic',
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
