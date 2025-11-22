@@ -2,21 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { gameState } from '../game/GameState';
 import { ExpBar } from '../components/game/ExpBar';
+import { useNavigation } from '@react-navigation/native';
 
 export const HomeScreen = () => {
-  const [currentExp, setCurrentExp] = useState(0);
-  const [level, setLevel] = useState(1);
+  const navigation = useNavigation();
+  const [currentExp, setCurrentExp] = useState(gameState.getState().exp);
+  const [level, setLevel] = useState(gameState.getState().level);
+  const [expToNextLevel, setExpToNextLevel] = useState(gameState.getState().expToNextLevel);
+
+  // LẮNG NGHE THAY ĐỔI TỪ GAMESTATE
+  useEffect(() => {
+    const unsubscribe = gameState.subscribe((newState) => {
+      setCurrentExp(newState.exp);
+      setLevel(newState.level);
+      setExpToNextLevel(newState.expToNextLevel);
+    });
+
+    return unsubscribe; // CLEANUP KHI COMPONENT UNMOUNT
+  }, []);
 
   const handleExplore = () => {
     gameState.addExp(10);
-    setCurrentExp(gameState.getState().exp);
-    setLevel(gameState.getState().level);
   };
 
   const handleSkillTree = () => {
     gameState.addExp(5);
-    setCurrentExp(gameState.getState().exp);
-    // TODO: Navigation to Skill Tree
+    navigation.navigate('SkillTree' as never); // ĐẨY SkillTree lên top of stack
+  };
+
+  const handleProjects = () => {
+    gameState.addExp(15);
+    navigation.navigate('Projects' as never); // ĐẨY SkillTree lên top of stack
   };
 
   return (
@@ -26,7 +42,7 @@ export const HomeScreen = () => {
 
       <ExpBar
         currentExp={currentExp}
-        maxExp={100}
+        maxExp={expToNextLevel}
         height={30}
         showLabel={true}
       />
@@ -41,7 +57,11 @@ export const HomeScreen = () => {
         <Text style={styles.buttonText}>🎯 Xem Skill Tree (+5 EXP)</Text>
       </TouchableOpacity>
 
-      <Text style={styles.hint}>Càng tương tác nhiều, càng mở khóa nhiều content!</Text>
+      <TouchableOpacity style={styles.secondaryButton} onPress={handleProjects}>
+        <Text style={styles.buttonText}>📂 Project Quests (+15 EXP)</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.hint}>Tổng EXP: {gameState.getState().totalExp}</Text>
     </View>
   );
 };

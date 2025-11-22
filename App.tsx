@@ -4,6 +4,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen } from './src/screens/HomeScreen';
+import { SkillTreeScreen } from './src/screens/SkillTreeScreen';
+import { ProjectQuestsScreen } from './src/screens/ProjectQuestsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +17,7 @@ function App() {
     <SafeAreaProvider>  
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />      
       <NavigationContainer>                                         {/* Thành phần gốc của React Navigation, quản lý trạng thái điều hướng toàn app. */}
-        {/* dạng ngăn xếp màn hình */}
+                                                                    {/* dạng ngăn xếp màn hình, thứ tự hiển thị (không phải trên dưới UI) */}
         <Stack.Navigator                                            
           screenOptions={{
             headerShown: false,
@@ -23,6 +25,8 @@ function App() {
           }}
         >
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="SkillTree" component={SkillTreeScreen} />
+          <Stack.Screen name="Projects" component={ProjectQuestsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
