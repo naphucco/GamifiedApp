@@ -1,39 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { LineChart, BarChart, PieChart } from 'react-native-chart-kit';
+import AnimatedBarChart from '../components/game/AnimatedBarChart';
 
-// Mock charts
-const Chart = ({ data, color }: { data: number[], color: string }) => {
-  const maxValue = Math.max(...data);
-  const chartHeight = 150;
-
-  return (
-    <View style={styles.chartContainer}>
-      <View style={styles.chart}>
-        {data.map((value, index) => (
-          <View key={index} style={styles.barContainer}>
-            <View 
-              style={[
-                styles.bar,
-                { 
-                  height: (value / maxValue) * chartHeight,
-                  backgroundColor: color
-                }
-              ]}
-            />
-            <Text style={styles.barLabel}>{value}</Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-};
+const screenWidth = Dimensions.get('window').width;
 
 export const ExperienceDetailScreen = () => {
   const navigation = useNavigation<any>();
   const route = useRoute();
-  
-  // Fix: Thêm fallback cho experience
+
   const experience = (route.params as any)?.experience || {
     year: 'Không có dữ liệu',
     title: 'Không có dữ liệu',
@@ -42,10 +18,64 @@ export const ExperienceDetailScreen = () => {
     tech: []
   };
 
-  // Mock data cho charts
-  const skillData = [85, 90, 75, 80, 70];
-  const projectData = [15, 8, 12, 5, 10];
-  const growthData = [30, 50, 75, 90, 100];
+  // DỮ LIỆU CHO 3 LOẠI CHART KHÁC NHAU
+  const skillProgressData = {
+    labels: ['React', 'TypeScript', 'Node.js', 'UI/UX', 'AWS'],
+    datasets: [{
+      data: [85, 90, 75, 80, 70]
+    }]
+  };
+
+  const projectTimelineData = {
+    labels: ['2020', '2021', '2022', '2023', '2024'],
+    datasets: [{
+      data: [15, 8, 12, 5, 10]
+    }]
+  };
+
+  const techDistributionData = [
+    {
+      name: 'Frontend',
+      population: 45,
+      color: '#4cc9f0',
+      legendFontColor: '#fff',
+      legendFontSize: 12
+    },
+    {
+      name: 'Backend',
+      population: 30,
+      color: '#f72585',
+      legendFontColor: '#fff',
+      legendFontSize: 12
+    },
+    {
+      name: 'Mobile',
+      population: 25,
+      color: '#7209b7',
+      legendFontColor: '#fff',
+      legendFontSize: 12
+    }
+  ];
+
+  const chartConfig = {
+    backgroundColor: '#1a1a2e',
+    backgroundGradientFrom: '#2d2d44',
+    backgroundGradientTo: '#2d2d44',
+    decimalPlaces: 0,
+    color: (opacity = 1) => `rgba(76, 201, 240, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#4cc9f0'
+    }
+  };
+
+  const chartWidth = screenWidth - 80;
+  const chartHeight = 170; // Rất nhỏ gọn
 
   return (
     <View style={styles.container}>
@@ -63,51 +93,69 @@ export const ExperienceDetailScreen = () => {
           <Text style={styles.description}>{experience.description}</Text>
         </View>
 
-        {/* SKILLS CHART */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Kỹ Năng Chính</Text>
-          <Text style={styles.chartSubtitle}>Mức độ thành thạo các công nghệ</Text>
-          <Chart data={skillData} color="#4cc9f0" />
-          <View style={styles.chartLegend}>
-            <Text style={styles.legendItem}>React Native: 85%</Text>
-            <Text style={styles.legendItem}>TypeScript: 90%</Text>
-            <Text style={styles.legendItem}>Node.js: 75%</Text>
-            <Text style={styles.legendItem}>UI/UX: 80%</Text>
-            <Text style={styles.legendItem}>AWS: 70%</Text>
+          <Text style={styles.sectionTitle}>Test custom chart</Text>
+          <View style={styles.chartContainer}>
+            <AnimatedBarChart
+              data={[85, 90, 75, 80, 70]}
+              labels={['React', 'TS', 'Node', 'UI/UX', 'AWS']}
+              colors={['#4cc9f0', '#f72585', '#7209b7', '#4361ee', '#3a0ca3']}
+            />
           </View>
         </View>
 
-        {/* PROJECTS CHART */}
+        {/* 1. LINE CHART - Skill Progress */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Dự Án Đã Làm</Text>
-          <Text style={styles.chartSubtitle}>Số lượng dự án qua các năm</Text>
-          <Chart data={projectData} color="#f72585" />
-          <View style={styles.chartLegend}>
-            <Text style={styles.legendItem}>2020: 15 projects</Text>
-            <Text style={styles.legendItem}>2021: 8 projects</Text>
-            <Text style={styles.legendItem}>2022: 12 projects</Text>
-            <Text style={styles.legendItem}>2023: 5 projects</Text>
-            <Text style={styles.legendItem}>2024: 10 projects</Text>
+          <Text style={styles.sectionTitle}>Tiến Trình Kỹ Năng</Text>
+          <View style={styles.chartContainer}>
+            <LineChart
+              data={skillProgressData}
+              width={chartWidth} // Vừa với padding
+              height={chartHeight} // Giảm height đáng kể
+              chartConfig={chartConfig}
+              bezier
+              style={styles.chart}
+              fromZero
+            />
           </View>
         </View>
 
-        {/* GROWTH CHART */}
+        {/* 2. BAR CHART - Project Timeline */}        
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Mức Độ Phát Triển</Text>
-          <Text style={styles.chartSubtitle}>Tăng trưởng kỹ năng qua thời gian</Text>
-          <Chart data={growthData} color="#7209b7" />
-          <View style={styles.chartLegend}>
-            <Text style={styles.legendItem}>Year 1: 30%</Text>
-            <Text style={styles.legendItem}>Year 2: 50%</Text>
-            <Text style={styles.legendItem}>Year 3: 75%</Text>
-            <Text style={styles.legendItem}>Year 4: 90%</Text>
-            <Text style={styles.legendItem}>Year 5: 100%</Text>
+          <Text style={styles.sectionTitle}>Dự Án Theo Năm</Text>
+          <View style={styles.chartContainer}>
+            <BarChart
+              data={projectTimelineData}
+              width={chartWidth}
+              height={chartHeight}
+              chartConfig={chartConfig}
+              style={styles.chart}
+              yAxisLabel=""
+              yAxisSuffix=""
+            />
+          </View>
+        </View>
+
+        {/* 3. PIE CHART - Tech Distribution */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Phân Bố Công Nghệ</Text>
+          <View style={styles.chartContainer}>
+            <PieChart
+              data={techDistributionData}
+              width={chartWidth}
+              height={chartHeight}
+              chartConfig={chartConfig}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="15"
+              absolute
+            />
           </View>
         </View>
 
         {/* TECH STACK */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Công Nghệ Sử Dụng</Text>
+          <Text style={styles.sectionTitle}>🛠 Công Nghệ Sử Dụng</Text>
           <View style={styles.techStack}>
             {experience.tech.map((tech: string, index: number) => (
               <View key={index} style={styles.techTag}>
@@ -118,8 +166,7 @@ export const ExperienceDetailScreen = () => {
         </View>
       </ScrollView>
 
-      {/* BACK BUTTON */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
@@ -185,7 +232,10 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     alignItems: 'center',
-    marginBottom: 15,
+    justifyContent: 'center',
+    marginVertical: 10,
+    overflow: 'visible', // Cho phép text hiển thị đầy đủ
+    height: 200, // Set fixed height cho container
   },
   chart: {
     flexDirection: 'row',
