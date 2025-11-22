@@ -35,6 +35,11 @@ export const HomeScreen = () => {
     navigation.navigate('Projects' as never); // ĐẨY SkillTree lên top of stack
   };
 
+  const handleExperience = () => {
+    gameState.addExp(20);
+    navigation.navigate('Experience' as never); // ĐẨY SkillTree lên top of stack
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🎮 Developer's Journey</Text>
@@ -59,6 +64,10 @@ export const HomeScreen = () => {
 
       <TouchableOpacity style={styles.secondaryButton} onPress={handleProjects}>
         <Text style={styles.buttonText}>📂 Project Quests (+15 EXP)</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.secondaryButton} onPress={handleExperience}>
+        <Text style={styles.buttonText}>📜 Career Journey (+20 EXP)</Text>
       </TouchableOpacity>
 
       <Text style={styles.hint}>Tổng EXP: {gameState.getState().totalExp}</Text>
