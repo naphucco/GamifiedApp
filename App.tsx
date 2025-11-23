@@ -9,6 +9,7 @@ import { ProjectQuestsScreen } from './src/screens/ProjectQuestsScreen';
 import { ExperienceScreen } from './src/screens/ExperienceScreen';
 import { ExperienceDetailScreen } from './src/screens/ExperienceDetailScreen';
 import { AchievementsScreen } from './src/screens/AchievementsScreen';
+import { ContactScreen } from './src/screens/ContactScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ function App() {
           <Stack.Screen name="Experience" component={ExperienceScreen} />
           <Stack.Screen name="ExperienceDetail" component={ExperienceDetailScreen} />
           <Stack.Screen name="Achievements" component={AchievementsScreen} />
+          <Stack.Screen name="Contact" component={ContactScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

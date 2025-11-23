@@ -64,3 +64,5 @@ Metro bundler phải chạy ở port 8081.
 # 3. Reset cache
 npx react-native start --reset-cache
 npx react-native run-android
+
+View → Tool Windows → Logcat (Alt + 6)

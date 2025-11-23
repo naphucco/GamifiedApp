@@ -10,6 +10,8 @@ export const HomeScreen = () => {
   const [level, setLevel] = useState(gameState.getState().level);
   const [expToNextLevel, setExpToNextLevel] = useState(gameState.getState().expToNextLevel);
 
+  console.log('🎯 TEST: HomeScreen loaded');
+
   // LẮNG NGHE THAY ĐỔI TỪ GAMESTATE
   useEffect(() => {
     const unsubscribe = gameState.subscribe((newState) => {
@@ -48,6 +50,11 @@ export const HomeScreen = () => {
     navigation.navigate('Achievements' as never);
   };
 
+  const handleContact = () => {
+    gameState.addExp(10);
+    navigation.navigate('Contact' as never);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🎮 Developer's Journey</Text>
@@ -80,6 +87,10 @@ export const HomeScreen = () => {
 
       <TouchableOpacity style={styles.secondaryButton} onPress={handleAchievements}>
         <Text style={styles.buttonText}>🏆 Achievements (+25 EXP)</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.secondaryButton} onPress={handleContact}>
+        <Text style={styles.buttonText}>📞 Contact (+10 EXP)</Text>
       </TouchableOpacity>
 
       <Text style={styles.hint}>Tổng EXP: {gameState.getState().totalExp}</Text>
