@@ -12,25 +12,9 @@ export const HomeScreen = () => {
   const [level, setLevel] = useState(gameState.getState().level);
   const [expToNextLevel, setExpToNextLevel] = useState(gameState.getState().expToNextLevel);
 
-  const fadeAnim = useState(new Animated.Value(0))[0];
-  const bounceAnim = useState(new Animated.Value(0))[0];
-
   console.log('🎯 TEST: HomeScreen loaded');
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 800,
-      useNativeDriver: true,
-    }).start();
-
-    Animated.spring(bounceAnim, {
-      toValue: 1,
-      friction: 3,
-      tension: 40,
-      useNativeDriver: true,
-    }).start();
-
     const unsubscribe = gameState.subscribe((newState) => {
       setCurrentExp(newState.exp);
       setLevel(newState.level);
@@ -65,16 +49,10 @@ export const HomeScreen = () => {
     navigation.navigate('Contact' as never);
   }, 10);
 
-  const bounceTransform = bounceAnim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0, -10, 0]
-  });
-
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <Animated.View style={styles.container}>
       <Animated.Text style={[
-        styles.title,
-        { transform: [{ translateY: bounceTransform }] }
+        styles.title
       ]}>
         🎮 Developer's Journey
       </Animated.Text>
