@@ -1,8 +1,10 @@
+// HomeScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Animated, StyleSheet } from 'react-native';
 import { gameState } from '../game/GameState';
 import { ExpBar } from '../components/game/ExpBar';
 import { useNavigation } from '@react-navigation/native';
+import { CustomButton } from '../components/ui/CustomButton';
 
 export const HomeScreen = () => {
   const navigation = useNavigation();
@@ -10,91 +12,130 @@ export const HomeScreen = () => {
   const [level, setLevel] = useState(gameState.getState().level);
   const [expToNextLevel, setExpToNextLevel] = useState(gameState.getState().expToNextLevel);
 
+  const fadeAnim = useState(new Animated.Value(0))[0];
+  const bounceAnim = useState(new Animated.Value(0))[0];
+
   console.log('🎯 TEST: HomeScreen loaded');
 
-  // LẮNG NGHE THAY ĐỔI TỪ GAMESTATE
   useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.spring(bounceAnim, {
+      toValue: 1,
+      friction: 3,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+
     const unsubscribe = gameState.subscribe((newState) => {
       setCurrentExp(newState.exp);
       setLevel(newState.level);
       setExpToNextLevel(newState.expToNextLevel);
     });
 
-    return unsubscribe; // CLEANUP KHI COMPONENT UNMOUNT
+    return unsubscribe;
   }, []);
 
-  const handleExplore = () => {
-    gameState.addExp(10);
+  const handleButtonPress = (action: () => void, expAmount: number) => {
+    gameState.addExp(expAmount);
+    action();
   };
 
-  const handleSkillTree = () => {
-    gameState.addExp(5);
+  const handleExplore = () => handleButtonPress(() => { }, 10);
+  const handleSkillTree = () => handleButtonPress(() => {
     gameState.trackExperienceView();
-    navigation.navigate('SkillTree' as never); // ĐẨY SkillTree lên top of stack
-  };
-
-  const handleProjects = () => {
-    gameState.addExp(15);
+    navigation.navigate('SkillTree' as never);
+  }, 5);
+  const handleProjects = () => handleButtonPress(() => {
     gameState.trackExperienceView();
-    navigation.navigate('Projects' as never); // ĐẨY SkillTree lên top of stack
-  };
-
-  const handleExperience = () => {
-    gameState.addExp(20);
+    navigation.navigate('Projects' as never);
+  }, 15);
+  const handleExperience = () => handleButtonPress(() => {
     gameState.trackExperienceView();
-    navigation.navigate('Experience' as never); // ĐẨY SkillTree lên top of stack
-  };
-
-  const handleAchievements = () => {
-    gameState.addExp(25);
+    navigation.navigate('Experience' as never);
+  }, 20);
+  const handleAchievements = () => handleButtonPress(() => {
     navigation.navigate('Achievements' as never);
-  };
-
-  const handleContact = () => {
-    gameState.addExp(10);
+  }, 25);
+  const handleContact = () => handleButtonPress(() => {
     navigation.navigate('Contact' as never);
-  };
+  }, 10);
+
+  const bounceTransform = bounceAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -10, 0]
+  });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🎮 Developer's Journey</Text>
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      <Animated.Text style={[
+        styles.title,
+        { transform: [{ translateY: bounceTransform }] }
+      ]}>
+        🎮 Developer's Journey
+      </Animated.Text>
+
       <Text style={styles.levelText}>Level {level}</Text>
 
       <ExpBar
         currentExp={currentExp}
         maxExp={expToNextLevel}
-        height={30}
+        height={25}
         showLabel={true}
       />
 
       <Text style={styles.subtitle}>Khám phá portfolio của tôi!</Text>
 
-      <TouchableOpacity style={styles.button} onPress={handleExplore}>
-        <Text style={styles.buttonText}>🚀 Khám Phá Dự Án (+10 EXP)</Text>
-      </TouchableOpacity>
+      <CustomButton
+        title="🚀 Khám Phá Dự Án"
+        expAmount={10}
+        type="primary"
+        onPress={handleExplore}
+      />
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={handleSkillTree}>
-        <Text style={styles.buttonText}>🎯 Xem Skill Tree (+5 EXP)</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonGrid}>
+        <CustomButton
+          title="🎯 Skill Tree"
+          expAmount={5}
+          type="secondary"
+          onPress={handleSkillTree}
+        />
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={handleProjects}>
-        <Text style={styles.buttonText}>📂 Project Quests (+15 EXP)</Text>
-      </TouchableOpacity>
+        <CustomButton
+          title="📂 Projects"
+          expAmount={15}
+          type="secondary"
+          onPress={handleProjects}
+        />
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={handleExperience}>
-        <Text style={styles.buttonText}>📜 Career Journey (+20 EXP)</Text>
-      </TouchableOpacity>
+        <CustomButton
+          title="📜 Experience"
+          expAmount={20}
+          type="secondary"
+          onPress={handleExperience}
+        />
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={handleAchievements}>
-        <Text style={styles.buttonText}>🏆 Achievements (+25 EXP)</Text>
-      </TouchableOpacity>
+        <CustomButton
+          title="🏆 Achievements"
+          expAmount={25}
+          type="secondary"
+          onPress={handleAchievements}
+        />
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={handleContact}>
-        <Text style={styles.buttonText}>📞 Contact (+10 EXP)</Text>
-      </TouchableOpacity>
+        <CustomButton
+          title="📞 Contact"
+          expAmount={10}
+          type="secondary"
+          onPress={handleContact}
+        />
+      </View>
 
       <Text style={styles.hint}>Tổng EXP: {gameState.getState().totalExp}</Text>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -103,60 +144,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#4cc9f0',
+    color: '#58cc02',
     textAlign: 'center',
     marginBottom: 10,
   },
   levelText: {
     fontSize: 24,
-    color: '#f72585',
+    color: '#1cb0f6',
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   subtitle: {
     fontSize: 18,
-    color: '#fff',
+    color: '#666666',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 30,
     marginTop: 20,
   },
-  button: {
-    backgroundColor: '#4361ee',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    elevation: 5,
-    marginBottom: 15,
-    width: '80%',
-    alignItems: 'center',
-  },
-  secondaryButton: {
-    backgroundColor: '#7209b7',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    elevation: 5,
-    width: '80%',
+  buttonGrid: {
+    width: '100%',
     alignItems: 'center',
     marginBottom: 20,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
   hint: {
     fontSize: 14,
-    color: '#8d99ae',
+    color: '#999999',
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: 20,
     fontStyle: 'italic',
-    paddingHorizontal: 20,
   },
 });
