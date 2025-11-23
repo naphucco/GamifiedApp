@@ -27,17 +27,25 @@ export const HomeScreen = () => {
 
   const handleSkillTree = () => {
     gameState.addExp(5);
+    gameState.trackExperienceView();
     navigation.navigate('SkillTree' as never); // ĐẨY SkillTree lên top of stack
   };
 
   const handleProjects = () => {
     gameState.addExp(15);
+    gameState.trackExperienceView();
     navigation.navigate('Projects' as never); // ĐẨY SkillTree lên top of stack
   };
 
   const handleExperience = () => {
     gameState.addExp(20);
+    gameState.trackExperienceView();
     navigation.navigate('Experience' as never); // ĐẨY SkillTree lên top of stack
+  };
+
+  const handleAchievements = () => {
+    gameState.addExp(25);
+    navigation.navigate('Achievements' as never);
   };
 
   return (
@@ -68,6 +76,10 @@ export const HomeScreen = () => {
 
       <TouchableOpacity style={styles.secondaryButton} onPress={handleExperience}>
         <Text style={styles.buttonText}>📜 Career Journey (+20 EXP)</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.secondaryButton} onPress={handleAchievements}>
+        <Text style={styles.buttonText}>🏆 Achievements (+25 EXP)</Text>
       </TouchableOpacity>
 
       <Text style={styles.hint}>Tổng EXP: {gameState.getState().totalExp}</Text>

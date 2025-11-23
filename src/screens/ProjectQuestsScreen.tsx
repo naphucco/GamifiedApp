@@ -1,25 +1,23 @@
 import { useNavigation } from "@react-navigation/native";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { gameState } from "../game/GameState";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const ProjectQuestsScreen = () => {
-
   const navigation = useNavigation<any>();
-
   const [projects, setProjects] = useState([
     {
-      id: 1,
+      id: 'portfolio_game', // ĐỔI THÀNH STRING
       title: 'Gamified Portfolio App',
       description: 'Ứng dụng portfolio tương tác với yếu tố game hóa',
       tech: ['React Native', 'TypeScript', 'Animation'],
       difficulty: 'medium',
       expReward: 100,
       status: 'completed',
-      claimed: false // ← THÊM TRẠNG THÁI ĐÃ NHẬN THƯỞNG CHƯA
+      claimed: false
     },
     {
-      id: 2,
+      id: 'ecommerce_app',
       title: 'E-Commerce Mobile App',
       description: 'Ứng dụng mua sắm với thanh toán online',
       tech: ['React Native', 'Node.js', 'MongoDB'],
@@ -29,7 +27,7 @@ export const ProjectQuestsScreen = () => {
       claimed: false
     },
     {
-      id: 3,
+      id: 'ai_chat',
       title: 'AI Chat Assistant',
       description: 'Trợ lý ảo sử dụng machine learning',
       tech: ['Python', 'TensorFlow', 'React'],
@@ -40,13 +38,18 @@ export const ProjectQuestsScreen = () => {
     }
   ]);
 
-  const handleClaimReward = (projectId: number) => {
+  // THÊM: Track khi vào screen
+  useEffect(() => {
+    gameState.trackExperienceView(); // Track khi vào Projects screen
+  }, []);
+
+  const handleClaimReward = (projectId: string) => { // ĐỔI THÀNH string
     const project = projects.find((p: any) => p.id === projectId);
 
     if (!project) return;
 
     if (project.status !== 'completed') {
-      Alert.alert('Chưa hoàn thành', 'Bạn cần hoàn thành dự án này trước!');  // Popup
+      Alert.alert('Chưa hoàn thành', 'Bạn cần hoàn thành dự án này trước!');
       return;
     }
 
@@ -63,11 +66,17 @@ export const ProjectQuestsScreen = () => {
     );
 
     gameState.addExp(project.expReward);
+    gameState.trackProjectView(projectId); // 🎯 THÊM DÒNG NÀY - Track project view
 
     Alert.alert(
       '🎉 Nhận Thưởng Thành Công!',
       `Bạn nhận được +${project.expReward} EXP từ dự án "${project.title}"`
     );
+  };
+
+  // THÊM: Track khi click vào project card để xem chi tiết
+  const handleProjectView = (projectId: string) => {
+    gameState.trackProjectView(projectId); // Track khi user xem project
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -79,7 +88,7 @@ export const ProjectQuestsScreen = () => {
     }
   };
 
-    const getClaimButtonText = (project: any) => {
+  const getClaimButtonText = (project: any) => {
     if (project.status !== 'completed') return '🔒 Chưa hoàn thành';
     if (project.claimed) return '✅ Đã nhận thưởng';
     return `🎁 Nhận +${project.expReward} EXP`;
@@ -95,10 +104,14 @@ export const ProjectQuestsScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>🚀 Project Quests</Text>
       <Text style={styles.subtitle}>Hoàn thành dự án để nhận EXP!</Text>
-      
+
       <ScrollView style={styles.projectsContainer}>
         {projects.map((project: any) => (
-          <View key={project.id} style={styles.projectCard}>
+          <TouchableOpacity
+            key={project.id}
+            style={styles.projectCard}
+            onPress={() => handleProjectView(project.id)} // 🎯 THÊM DÒNG NÀY
+          >
             <View style={styles.projectHeader}>
               <Text style={styles.projectTitle}>{project.title}</Text>
               <View style={[
@@ -110,9 +123,9 @@ export const ProjectQuestsScreen = () => {
                 </Text>
               </View>
             </View>
-            
+
             <Text style={styles.projectDescription}>{project.description}</Text>
-            
+
             <View style={styles.techStack}>
               {project.tech.map((tech: any, index: any) => (
                 <View key={index} style={styles.techTag}>
@@ -120,11 +133,11 @@ export const ProjectQuestsScreen = () => {
                 </View>
               ))}
             </View>
-            
+
             <View style={styles.projectFooter}>
               <Text style={styles.expReward}>🎯 +{project.expReward} EXP</Text>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={getClaimButtonStyle(project)}
                 onPress={() => handleClaimReward(project.id)}
                 disabled={project.status !== 'completed' || project.claimed}
@@ -134,11 +147,11 @@ export const ProjectQuestsScreen = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >

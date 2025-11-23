@@ -1,43 +1,62 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react'; // Thêm useEffect
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { gameState } from '../game/GameState'; // Thêm import
 
 export const SkillTreeScreen = () => {
-  
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const skills = [
-    { id: 1, name: 'React Native', level: 5, category: 'Mobile' },
-    { id: 2, name: 'TypeScript', level: 5, category: 'Language' },
-    { id: 3, name: 'Node.js', level: 4, category: 'Backend' },
-    { id: 4, name: 'UI/UX Design', level: 4, category: 'Design' },
+    { id: 'react_native', name: 'React Native', level: 5, category: 'Mobile' }, // ĐỔI id THÀNH string
+    { id: 'typescript', name: 'TypeScript', level: 5, category: 'Language' },
+    { id: 'nodejs', name: 'Node.js', level: 4, category: 'Backend' },
+    { id: 'ui_ux', name: 'UI/UX Design', level: 4, category: 'Design' },
+    { id: 'aws', name: 'AWS', level: 3, category: 'Cloud' },
+    { id: 'python', name: 'Python', level: 3, category: 'Language' },
   ];
 
+  // THÊM: Track khi vào screen
+  useEffect(() => {
+    gameState.trackExperienceView(); // Track khi vào Skill Tree screen
+  }, []);
+
+  // THÊM: Track khi click vào skill
+  const handleSkillView = (skillId: string) => {
+    gameState.trackSkillView(skillId); // Track khi user xem skill
+  };
+
   const handleBack = () => {
-    navigation.goBack(); // GỠ SkillTree khỏi stack, trở về HomeScreen
+    navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🎯 Skill Tree</Text>
       <Text style={styles.subtitle}>Tech Stack & Proficiency</Text>
-      
+
       <ScrollView style={styles.skillsContainer}>
         {skills.map(skill => (
-          <TouchableOpacity key={skill.id} style={styles.skillCard}>
+          <TouchableOpacity
+            key={skill.id}
+            style={styles.skillCard}
+            onPress={() => handleSkillView(skill.id)}
+          >
             <View style={styles.skillHeader}>
               <Text style={styles.skillName}>{skill.name}</Text>
               <Text style={styles.skillLevel}>Level {skill.level}</Text>
             </View>
             <View style={styles.progressBar}>
-              <View 
+              <View
                 style={[
                   styles.progressFill,
                   { width: `${(skill.level / 5) * 100}%` }
-                ]} 
+                ]}
               />
             </View>
             <Text style={styles.skillCategory}>{skill.category}</Text>
+
+            {/* THÊM: Hint để user biết click tracking */}
+            <Text style={styles.viewHint}>👉 Nhấp để khám phá</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -110,6 +129,13 @@ const styles = StyleSheet.create({
   skillCategory: {
     fontSize: 14,
     color: '#8d99ae',
+  },
+  viewHint: {
+    fontSize: 12,
+    color: '#8d99ae',
+    fontStyle: 'italic',
+    marginTop: 8,
+    textAlign: 'center',
   },
   backButton: {
     backgroundColor: '#7209b7',

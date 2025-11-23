@@ -5,6 +5,7 @@ export interface GameState {
   unlockedAchievements: string[];
   completedProjects: string[];
   discoveredSkills: string[];
+  experienceViewed: number;
   totalExp: number;
 }
 
