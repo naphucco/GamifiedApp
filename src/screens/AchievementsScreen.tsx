@@ -141,23 +141,30 @@ export const AchievementsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#4cc9f0',
+    color: '#58cc02',
     textAlign: 'center',
     marginBottom: 20,
   },
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#2d2d44',
+    backgroundColor: '#f8f9fa',
     padding: 20,
     borderRadius: 15,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   statItem: {
     alignItems: 'center',
@@ -165,28 +172,35 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#f72585',
+    color: '#ff9600',
   },
   statLabel: {
     fontSize: 12,
-    color: '#8d99ae',
+    color: '#666666',
     marginTop: 5,
   },
   achievementsList: {
     flex: 1,
   },
   achievementCard: {
-    backgroundColor: '#2d2d44',
+    backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 15,
     marginBottom: 15,
     borderLeftWidth: 4,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   unlocked: {
-    borderLeftColor: '#4cc9f0',
+    borderLeftColor: '#1cb0f6',
   },
   locked: {
-    borderLeftColor: '#6b7280',
+    borderLeftColor: '#cccccc',
     opacity: 0.7,
   },
   achievementHeader: {
@@ -204,34 +218,33 @@ const styles = StyleSheet.create({
   achievementName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333333',
     marginBottom: 4,
   },
   achievementDescription: {
     fontSize: 14,
-    color: '#d1d5db',
+    color: '#555555',
     marginBottom: 6,
   },
-  // 🎯 THÊM STYLE CHO ACTION TEXT
   actionText: {
     fontSize: 12,
     fontStyle: 'italic',
     marginTop: 4,
   },
   actionUnlocked: {
-    color: '#4cc9f0', // Màu xanh cho đã unlock
+    color: '#1cb0f6',
   },
   actionLocked: {
-    color: '#f59e0b', // Màu vàng cho chưa unlock - khuyến khích hoàn thành
+    color: '#ff9600',
   },
   expBadge: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#ff9600',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   expText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -239,22 +252,27 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   unlockedText: {
-    color: '#4cc9f0',
+    color: '#1cb0f6',
     fontWeight: 'bold',
   },
   lockedText: {
-    color: '#6b7280',
+    color: '#888888',
     fontStyle: 'italic',
   },
   backButton: {
-    backgroundColor: '#7209b7',
+    backgroundColor: '#58cc02',
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
+    shadowColor: '#58cc02',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   backButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
   },

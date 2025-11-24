@@ -71,19 +71,19 @@ export const SkillTreeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#4cc9f0',
+    color: '#58cc02', // Xanh lá Duolingo
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#fff',
+    color: '#666666', // Xám dịu
     textAlign: 'center',
     marginBottom: 30,
   },
@@ -91,12 +91,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   skillCard: {
-    backgroundColor: '#2d2d44',
+    backgroundColor: '#ffffff', // Nền trắng
     padding: 20,
     borderRadius: 15,
     marginBottom: 15,
     borderLeftWidth: 4,
-    borderLeftColor: '#4361ee',
+    borderLeftColor: '#1cb0f6', // Xanh dương Duolingo
+    borderWidth: 1,
+    borderColor: '#f0f0f0', // Viền xám rất nhạt
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
   },
   skillHeader: {
     flexDirection: 'row',
@@ -107,45 +114,50 @@ const styles = StyleSheet.create({
   skillName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333333', // Đen nhẹ
   },
   skillLevel: {
     fontSize: 16,
-    color: '#f72585',
+    color: '#ff9600', // Cam Duolingo
     fontWeight: '600',
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#333',
+    backgroundColor: '#f0f0f0', // Xám rất nhạt
     borderRadius: 4,
     marginBottom: 8,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4cc9f0',
+    backgroundColor: '#1cb0f6', // Xanh dương Duolingo
     borderRadius: 4,
   },
   skillCategory: {
     fontSize: 14,
-    color: '#8d99ae',
+    color: '#888888', // Xám trung bình
   },
   viewHint: {
     fontSize: 12,
-    color: '#8d99ae',
+    color: '#999999', // Xám nhạt
     fontStyle: 'italic',
     marginTop: 8,
     textAlign: 'center',
   },
   backButton: {
-    backgroundColor: '#7209b7',
+    backgroundColor: '#58cc02', // Xanh lá Duolingo
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
+    shadowColor: '#58cc02',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   backButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
   },

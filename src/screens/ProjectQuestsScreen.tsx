@@ -164,19 +164,19 @@ export const ProjectQuestsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#4cc9f0',
+    color: '#58cc02',
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#fff',
+    color: '#666666',
     textAlign: 'center',
     marginBottom: 30,
   },
@@ -184,12 +184,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   projectCard: {
-    backgroundColor: '#2d2d44',
+    backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 15,
     marginBottom: 15,
     borderLeftWidth: 4,
-    borderLeftColor: '#4361ee',
+    borderLeftColor: '#1cb0f6',
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
   },
   projectHeader: {
     flexDirection: 'row',
@@ -200,7 +207,7 @@ const styles = StyleSheet.create({
   projectTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333333',
     flex: 1,
   },
   difficultyBadge: {
@@ -210,13 +217,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   difficultyText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 10,
     fontWeight: 'bold',
   },
   projectDescription: {
     fontSize: 14,
-    color: '#d1d5db',
+    color: '#666666',
     marginBottom: 12,
     lineHeight: 20,
   },
@@ -226,7 +233,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   techTag: {
-    backgroundColor: '#374151',
+    backgroundColor: '#f0f0f0',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -234,7 +241,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   techText: {
-    color: '#9ca3af',
+    color: '#555555',
     fontSize: 12,
   },
   projectFooter: {
@@ -244,7 +251,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   expReward: {
-    color: '#fbbf24',
+    color: '#ff9600',
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -254,19 +261,24 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   statusText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 12,
     fontWeight: 'bold',
   },
   backButton: {
-    backgroundColor: '#7209b7',
+    backgroundColor: '#58cc02',
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
+    shadowColor: '#58cc02',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   backButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
   },
@@ -277,19 +289,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   claimButtonDisabled: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#cccccc',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
   },
   claimButtonClaimed: {
-    backgroundColor: '#374151',
+    backgroundColor: '#888888',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
   },
   claimButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 12,
     fontWeight: 'bold',
   },
