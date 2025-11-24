@@ -12,8 +12,6 @@ export const HomeScreen = () => {
   const [level, setLevel] = useState(gameState.getState().level);
   const [expToNextLevel, setExpToNextLevel] = useState(gameState.getState().expToNextLevel);
 
-  console.log('🎯 TEST: HomeScreen loaded');
-
   useEffect(() => {
     const unsubscribe = gameState.subscribe((newState) => {
       setCurrentExp(newState.exp);
@@ -24,38 +22,14 @@ export const HomeScreen = () => {
     return unsubscribe;
   }, []);
 
-  const handleButtonPress = (action: () => void, expAmount: number) => {
-    gameState.addExp(expAmount);
-    action();
+  const handleStartJourney = () => {
+    gameState.addExp(5);
+    navigation.navigate('MainApp' as never);
   };
 
-  const handleExplore = () => handleButtonPress(() => { }, 10);
-  const handleSkillTree = () => handleButtonPress(() => {
-    gameState.trackExperienceView();
-    navigation.navigate('SkillTree' as never);
-  }, 5);
-  const handleProjects = () => handleButtonPress(() => {
-    gameState.trackExperienceView();
-    navigation.navigate('Projects' as never);
-  }, 15);
-  const handleExperience = () => handleButtonPress(() => {
-    gameState.trackExperienceView();
-    navigation.navigate('Experience' as never);
-  }, 20);
-  const handleAchievements = () => handleButtonPress(() => {
-    navigation.navigate('Achievements' as never);
-  }, 25);
-  const handleContact = () => handleButtonPress(() => {
-    navigation.navigate('Contact' as never);
-  }, 10);
-
   return (
-    <Animated.View style={styles.container}>
-      <Animated.Text style={[
-        styles.title
-      ]}>
-        🎮 Developer's Journey
-      </Animated.Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>🎮 Developer's Journey</Text>
 
       <Text style={styles.levelText}>Level {level}</Text>
 
@@ -66,54 +40,27 @@ export const HomeScreen = () => {
         showLabel={true}
       />
 
-      <Text style={styles.subtitle}>Khám phá portfolio của tôi!</Text>
+      <Text style={styles.subtitle}>
+        Khám phá hành trình phát triển của tôi qua gamified portfolio!
+      </Text>
 
-      <CustomButton
-        title="🚀 Khám Phá Dự Án"
-        expAmount={10}
-        type="primary"
-        onPress={handleExplore}
-      />
-
-      <View style={styles.buttonGrid}>
-        <CustomButton
-          title="🎯 Skill Tree"
-          expAmount={5}
-          type="secondary"
-          onPress={handleSkillTree}
-        />
-
-        <CustomButton
-          title="📂 Projects"
-          expAmount={15}
-          type="secondary"
-          onPress={handleProjects}
-        />
-
-        <CustomButton
-          title="📜 Experience"
-          expAmount={20}
-          type="secondary"
-          onPress={handleExperience}
-        />
-
-        <CustomButton
-          title="🏆 Achievements"
-          expAmount={25}
-          type="secondary"
-          onPress={handleAchievements}
-        />
-
-        <CustomButton
-          title="📞 Contact"
-          expAmount={10}
-          type="secondary"
-          onPress={handleContact}
-        />
+      <View style={styles.featureList}>
+        <Text style={styles.featureItem}>🎯 Skill Tree - Công nghệ thành thạo</Text>
+        <Text style={styles.featureItem}>📂 Projects - Dự án thực tế</Text>
+        <Text style={styles.featureItem}>📜 Experience - Hành trình nghề nghiệp</Text>
+        <Text style={styles.featureItem}>🏆 Achievements - Thành tích đạt được</Text>
+        <Text style={styles.featureItem}>📞 Contact - Kết nối với tôi</Text>
       </View>
 
+      <CustomButton
+        title="🚀 Bắt Đầu Hành Trình"
+        expAmount={5}
+        type="primary"
+        onPress={handleStartJourney}
+      />
+
       <Text style={styles.hint}>Tổng EXP: {gameState.getState().totalExp}</Text>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -139,22 +86,34 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#666666',
     textAlign: 'center',
     marginBottom: 30,
     marginTop: 20,
+    lineHeight: 22,
   },
-  buttonGrid: {
+  featureList: {
+    marginBottom: 40,
     width: '100%',
-    alignItems: 'center',
-    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  featureItem: {
+    fontSize: 16,
+    color: '#555555',
+    marginBottom: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: '#1cb0f6',
   },
   hint: {
     fontSize: 14,
     color: '#999999',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 30,
     fontStyle: 'italic',
   },
 });
