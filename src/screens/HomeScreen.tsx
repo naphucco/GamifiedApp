@@ -1,10 +1,11 @@
 // HomeScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Animated, StyleSheet } from 'react-native';
+import { View, Animated, StyleSheet } from 'react-native';
 import { gameState } from '../game/GameState';
 import { ExpBar } from '../components/game/ExpBar';
 import { useNavigation } from '@react-navigation/native';
 import { CustomButton } from '../components/ui/CustomButton';
+import { Heading, Text } from '../components/ui/StyledText';
 
 export const HomeScreen = () => {
   const navigation = useNavigation();
@@ -42,10 +43,6 @@ export const HomeScreen = () => {
 
       <Text style={styles.subtitle}>
         Khám phá hành trình phát triển của tôi qua gamified portfolio!
-      </Text>
-
-      <Text style={{ fontFamily: 'Nunito-Black', fontSize: 20 }}>
-        Nunito Black
       </Text>
 
       <View style={styles.featureList}>

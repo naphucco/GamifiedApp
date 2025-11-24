@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { TouchableOpacity, Text, Animated, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Animated, StyleSheet, View } from 'react-native';
+import { ButtonText, Text } from './StyledText';
 
 interface CustomButtonProps {
   title: string;
@@ -67,9 +68,9 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
           activeOpacity={0.9}
           disabled={disabled}
         >
-          <Text style={type === 'primary' ? styles.primaryButtonText : styles.secondaryButtonText}>
+          <ButtonText style={type === 'primary' ? styles.primaryButtonText : styles.secondaryButtonText}>
             {title}
-          </Text>
+          </ButtonText>
           {expAmount && (
             <Text style={[
               styles.expText,

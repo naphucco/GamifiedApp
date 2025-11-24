@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ACHIEVEMENTS } from '../game/achievements';
 import { gameState } from '../game/GameState';
+import { Text } from '../components/ui/StyledText';
 
 export const AchievementsScreen = () => {
   const navigation = useNavigation<any>();

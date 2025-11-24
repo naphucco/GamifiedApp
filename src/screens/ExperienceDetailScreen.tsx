@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { LineChart, BarChart, PieChart } from 'react-native-chart-kit';
 import AnimatedBarChart from '../components/game/AnimatedBarChart';
+import { Text } from '../components/ui/StyledText';
 
 const screenWidth = Dimensions.get('window').width;
 

@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react'; // Thêm useEffect
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { gameState } from '../game/GameState'; // Thêm import
+import { Text } from '../components/ui/StyledText';
 
 export const SkillTreeScreen = () => {
   const navigation = useNavigation<any>();

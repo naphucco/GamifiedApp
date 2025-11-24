@@ -1,4 +1,5 @@
-import React from 'react';
+// App.js
+import React, { useState } from 'react';
 import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
@@ -6,11 +7,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ExperienceDetailScreen } from './src/screens/ExperienceDetailScreen';
 import { AppNavigator } from './src/components/game/AppNavigator';
+import { SplashScreen } from './src/screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [isSplashVisible, setIsSplashVisible] = useState(true);
   const isDarkMode = useColorScheme() === 'dark';
+
+  if (isSplashVisible) {
+    return <SplashScreen onFinish={() => setIsSplashVisible(false)} />;
+  }
 
   return (
     <SafeAreaProvider>
@@ -23,7 +30,6 @@ function App() {
           }}
         >
           <Stack.Screen name="Home" component={HomeScreen} />
-          {/* Thay thế các screen riêng lẻ bằng MainApp */}
           <Stack.Screen name="MainApp" component={AppNavigator} />
           {/* Giữ lại các screen cần navigation stack riêng */}
           <Stack.Screen name="ExperienceDetail" component={ExperienceDetailScreen} />

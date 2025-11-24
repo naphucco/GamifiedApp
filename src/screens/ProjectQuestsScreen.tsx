@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { gameState } from "../game/GameState";
 import { useState, useEffect } from "react";
+import { Text } from "../components/ui/StyledText";
 
 export const ProjectQuestsScreen = () => {
   const navigation = useNavigation<any>();

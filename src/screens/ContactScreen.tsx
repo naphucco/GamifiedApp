@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, Linking } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { gameState } from '../game/GameState';
+import { Text } from '../components/ui/StyledText';
 
 export const ContactScreen = () => {
   const navigation = useNavigation<any>();
