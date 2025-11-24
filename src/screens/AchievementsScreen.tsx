@@ -21,7 +21,7 @@ export const AchievementsScreen = () => {
 
       case 'skill_explorer':
         // Điều hướng đến Skill Tree Screen  
-        navigation.navigate('SkillTree');
+        navigation.navigate('Skills');
         break;
 
       case 'career_historian':
@@ -96,7 +96,6 @@ export const AchievementsScreen = () => {
               achievement.unlocked ? styles.unlocked : styles.locked
             ]}
             onPress={() => handleAchievementPress(achievement.id)}
-          // 🎯 XÓA DÒNG NÀY: disabled={!achievement.unlocked}
           >
             <View style={styles.achievementHeader}>
               <Text style={styles.achievementIcon}>{achievement.icon}</Text>
