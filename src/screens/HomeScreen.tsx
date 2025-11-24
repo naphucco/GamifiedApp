@@ -44,6 +44,10 @@ export const HomeScreen = () => {
         Khám phá hành trình phát triển của tôi qua gamified portfolio!
       </Text>
 
+      <Text style={{ fontFamily: 'Nunito-Black', fontSize: 20 }}>
+        Nunito Black
+      </Text>
+
       <View style={styles.featureList}>
         <Text style={styles.featureItem}>🎯 Skill Tree - Công nghệ thành thạo</Text>
         <Text style={styles.featureItem}>📂 Projects - Dự án thực tế</Text>
