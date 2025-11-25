@@ -110,15 +110,18 @@ export const ContactScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>🔗 Mạng Xã Hội</Text>
           <View style={styles.socialLinks}>
-            <TouchableOpacity style={styles.socialButton} onPress={() => openLink('https://github.com')}>
-              <Text style={styles.socialText}>🐙 GitHub</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={() => openLink('https://linkedin.com')}>
-              <Text style={styles.socialText}>💼 LinkedIn</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={() => openLink('mailto:example@email.com')}>
-              <Text style={styles.socialText}>📧 Email</Text>
-            </TouchableOpacity>
+            <CustomButton
+              title="💼 LinkedIn"
+              onPress={() => openLink('https://linkedin.com')}
+              customColor="#1cb0f6"
+              customShadowColor="#168ec2"
+            />
+            <CustomButton
+              title="📧 Email"
+              onPress={() => openLink('mailto:example@email.com')}
+              customColor="#1cb0f6"
+              customShadowColor="#168ec2"
+            />
           </View>
         </View>
 
