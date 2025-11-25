@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { ACHIEVEMENTS } from '../game/achievements';
 import { gameState } from '../game/GameState';
 import { Text } from '../components/ui/StyledText';
+import { withScreenTransition } from '../components/game/ScreenTransition';
 
-export const AchievementsScreen = () => {
+export const AchievementsComponent = () => {
   const navigation = useNavigation<any>();
 
   const unlockedCount = ACHIEVEMENTS.filter(a => a.unlocked).length;
@@ -137,6 +138,8 @@ export const AchievementsScreen = () => {
     </View>
   );
 };
+
+export const AchievementsScreen = withScreenTransition(AchievementsComponent, 'scale');
 
 const styles = StyleSheet.create({
   container: {

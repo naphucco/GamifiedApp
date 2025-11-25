@@ -3,8 +3,9 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-nat
 import { gameState } from "../game/GameState";
 import { useState, useEffect } from "react";
 import { Text } from "../components/ui/StyledText";
+import { withScreenTransition } from "../components/game/ScreenTransition";
 
-export const ProjectQuestsScreen = () => {
+export const ProjectQuestsComponent = () => {
   const navigation = useNavigation<any>();
   const [projects, setProjects] = useState([
     {
@@ -161,6 +162,8 @@ export const ProjectQuestsScreen = () => {
     </View>
   );
 };
+
+export const ProjectQuestsScreen = withScreenTransition(ProjectQuestsComponent, 'slideUp');
 
 const styles = StyleSheet.create({
   container: {

@@ -3,8 +3,9 @@ import React, { useEffect } from 'react'; // Thêm useEffect
 import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { gameState } from '../game/GameState'; // Thêm import
 import { Text } from '../components/ui/StyledText';
+import { withScreenTransition } from '../components/game/ScreenTransition';
 
-export const SkillTreeScreen = () => {
+const SkillTreeComponent = () => {
   const navigation = useNavigation<any>();
 
   const skills = [
@@ -68,6 +69,8 @@ export const SkillTreeScreen = () => {
     </View>
   );
 };
+
+export const SkillTreeScreen = withScreenTransition(SkillTreeComponent, 'slideRight');
 
 const styles = StyleSheet.create({
   container: {

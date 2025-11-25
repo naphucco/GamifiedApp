@@ -49,21 +49,19 @@ const AnimatedTabBar: React.FC<AnimatedTabBarProps> = ({
     });
 
     if (!isFocused && !event.defaultPrevented) {
-      // Animation khi chọn tab
-      Animated.sequence([
-        Animated.timing(animationValues[index], {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animationValues[index], {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
-
+      // Navigate trước
       navigation.navigate(route.name);
+
+      // Spring animation - cảm giác nhanh hơn
+      Animated.spring(animationValues[index], {
+        toValue: 1,
+        tension: 1000, // Cao = nhanh
+        friction: 3,   // Thấp = ít giảm tốc
+        useNativeDriver: true,
+      }).start(() => {
+        // Reset sau khi animation
+        animationValues[index].setValue(0);
+      });
     }
   };
 
