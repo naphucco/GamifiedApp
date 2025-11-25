@@ -5,6 +5,7 @@ import { gameState } from '../game/GameState';
 import { Text } from '../components/ui/StyledText';
 import { CustomTextInput } from '../components/ui/CustomTextInput';
 import { CustomButton } from '../components/ui/CustomButton';
+import { CustomAlertModal } from '../components/ui/CustomAlertModal';
 
 export const ContactScreen = () => {
   const navigation = useNavigation<any>();
@@ -16,6 +17,7 @@ export const ContactScreen = () => {
     email: false,
     message: false
   });
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,15 +59,24 @@ export const ContactScreen = () => {
   };
 
   const handleSubmitContact = () => {
+    // --- Xử lý Lỗi Validation ---
     if (!validateForm()) {
-      Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin!');
+      showAlert(
+        'Lỗi',
+        'Vui lòng điền đầy đủ thông tin bắt buộc!',
+        'error'
+        // Không có onConfirm, chỉ đóng Modal
+      );
       return;
     }
 
-    Alert.alert(
+    // --- Xử lý Thành công ---
+    showAlert(
       'Thành công!',
       `Cảm ơn ${name}! Tin nhắn của bạn đã được gửi. Tôi sẽ liên hệ lại sớm.`,
-      [{ text: 'OK', onPress: () => navigation.goBack() }]
+      'success',
+      // Hành động sau khi nhấn OK: Quay lại trang trước
+      () => navigation.goBack()
     );
 
     gameState.addExp(30); // EXP cho việc gửi contact
@@ -75,6 +86,35 @@ export const ContactScreen = () => {
     setEmail('');
     setMessage('');
     setErrors({ name: false, email: false, message: false });
+  };
+
+  // Thêm state cho Custom Alert Modal
+  const [alertState, setAlertState] = useState({
+    isVisible: false,
+    title: '',
+    message: '',
+    type: 'error' as 'error' | 'success', // Hoặc type tùy ý
+    onConfirm: () => { }, // Hành động sau khi nhấn OK (quan trọng cho Success/Linking)
+  });
+
+  // Hàm đóng modal chung
+  const closeAlert = () => {
+    setAlertState(prev => ({ ...prev, isVisible: false }));
+    // Thực hiện hành động xác nhận sau khi Modal đóng (nếu có)
+    if (alertState.onConfirm) {
+      alertState.onConfirm();
+    }
+  };
+
+  // Hàm hiển thị modal
+  const showAlert = (title: string, message: string, type: 'error' | 'success', onConfirm: () => void = () => { }) => {
+    setAlertState({
+      isVisible: true,
+      title,
+      message,
+      type,
+      onConfirm,
+    });
   };
 
   // UPDATED: Cập nhật state và gọi hàm xác thực
@@ -97,7 +137,15 @@ export const ContactScreen = () => {
   };
 
   const openLink = (url: string) => {
-    Linking.openURL(url).catch(err => Alert.alert('Lỗi', 'Không thể mở link'));
+    Linking.openURL(url).catch(err => {
+      // Xử lý Lỗi Mở Link
+      showAlert(
+        'Lỗi Mở Link',
+        'Đã xảy ra lỗi, không thể mở liên kết này. Vui lòng thử lại sau.',
+        'error'
+      );
+      // Không có onConfirm, chỉ đóng Modal
+    });
   };
 
   return (
@@ -173,6 +221,15 @@ export const ContactScreen = () => {
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>← Quay Lại</Text>
       </TouchableOpacity>
+
+      <CustomAlertModal
+        isVisible={alertState.isVisible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        // Khi Modal đóng, nó sẽ gọi closeAlert để thực hiện hành động onConfirm đã lưu
+        onClose={closeAlert}
+      />
     </View>
   );
 };
