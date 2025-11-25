@@ -73,7 +73,7 @@ const AnimatedTabBar: React.FC<AnimatedTabBarProps> = ({
 
         const scale = animationValues[index].interpolate({
           inputRange: [0, 1],
-          outputRange: [1, 0.8],
+          outputRange: [1, 0.85],
         });
 
         return (
@@ -90,10 +90,10 @@ const AnimatedTabBar: React.FC<AnimatedTabBarProps> = ({
               styles.iconContainer,
               {
                 transform: [{ scale }],
-                backgroundColor: isFocused ? 'rgba(88, 204, 2, 0.1)' : 'transparent'
+                backgroundColor: isFocused ? 'rgba(88, 204, 2, 0.15)' : 'transparent'
               }
             ]}>
-              {getIcon(route.name, isFocused ? '#58cc02' : '#999999', 24)}
+              {getIcon(route.name, isFocused ? '#58cc02' : '#666666', 32)}
             </Animated.View>
           </TouchableOpacity>
         );
@@ -109,34 +109,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
     height: 70,
-    paddingBottom: 8,
-    paddingTop: 8,
   },
   tabItem: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 4,
-  },
-  tabLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  activeIndicator: {
-    position: 'absolute',
-    top: 2,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#58cc02',
   },
 });
 
