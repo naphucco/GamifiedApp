@@ -3,329 +3,265 @@ import { View, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, Linki
 import { useNavigation } from '@react-navigation/native';
 import { gameState } from '../game/GameState';
 import { Text } from '../components/ui/StyledText';
+import { CustomTextInput } from '../components/ui/CustomTextInput';
+import { CustomButton } from '../components/ui/CustomButton';
 
 export const ContactScreen = () => {
- const navigation = useNavigation<any>();
- const [name, setName] = useState('');
- const [email, setEmail] = useState('');
- const [message, setMessage] = useState('');
- const [errors, setErrors] = useState({
-  name: false,
-  email: false,
-  message: false
- });
+  const navigation = useNavigation<any>();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    message: false
+  });
 
- const validateEmail = (email: string) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
- };
-
- // NEW: Hàm xác thực riêng cho từng trường
- const validateFormForField = (field: keyof typeof errors, value: string) => {
-  let isError = false;
-  const trimmedValue = value.trim();
-
-  switch (field) {
-   case 'name':
-    isError = !trimmedValue;
-    break;
-   case 'email':
-    // Chỉ kiểm tra regex nếu có giá trị (không trống) để tránh lỗi khi ô trống
-    isError = !trimmedValue || !validateEmail(trimmedValue);
-    break;
-   case 'message':
-    isError = !trimmedValue;
-    break;
-  }
-
-  setErrors(prev => ({ ...prev, [field]: isError }));
-  return !isError;
- };
-
- // OLD: Hàm xác thực toàn bộ form (chủ yếu dùng khi nhấn nút Gửi)
- const validateForm = () => {
-  const newErrors = {
-   name: !name.trim(),
-   email: !email.trim() || !validateEmail(email),
-   message: !message.trim()
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  setErrors(newErrors);
-  return !newErrors.name && !newErrors.email && !newErrors.message;
- };
+  // NEW: Hàm xác thực riêng cho từng trường
+  const validateFormForField = (field: keyof typeof errors, value: string) => {
+    let isError = false;
+    const trimmedValue = value.trim();
 
- const handleSubmitContact = () => {
-  if (!validateForm()) {
-   Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin!');
-   return;
-  }
+    switch (field) {
+      case 'name':
+        isError = !trimmedValue;
+        break;
+      case 'email':
+        // Chỉ kiểm tra regex nếu có giá trị (không trống) để tránh lỗi khi ô trống
+        isError = !trimmedValue || !validateEmail(trimmedValue);
+        break;
+      case 'message':
+        isError = !trimmedValue;
+        break;
+    }
 
-  Alert.alert(
-   'Thành công!',
-   `Cảm ơn ${name}! Tin nhắn của bạn đã được gửi. Tôi sẽ liên hệ lại sớm.`,
-   [{ text: 'OK', onPress: () => navigation.goBack() }]
+    setErrors(prev => ({ ...prev, [field]: isError }));
+    return !isError;
+  };
+
+  // OLD: Hàm xác thực toàn bộ form (chủ yếu dùng khi nhấn nút Gửi)
+  const validateForm = () => {
+    const newErrors = {
+      name: !name.trim(),
+      email: !email.trim() || !validateEmail(email),
+      message: !message.trim()
+    };
+
+    setErrors(newErrors);
+    return !newErrors.name && !newErrors.email && !newErrors.message;
+  };
+
+  const handleSubmitContact = () => {
+    if (!validateForm()) {
+      Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin!');
+      return;
+    }
+
+    Alert.alert(
+      'Thành công!',
+      `Cảm ơn ${name}! Tin nhắn của bạn đã được gửi. Tôi sẽ liên hệ lại sớm.`,
+      [{ text: 'OK', onPress: () => navigation.goBack() }]
+    );
+
+    gameState.addExp(30); // EXP cho việc gửi contact
+
+    // Reset form
+    setName('');
+    setEmail('');
+    setMessage('');
+    setErrors({ name: false, email: false, message: false });
+  };
+
+  // UPDATED: Cập nhật state và gọi hàm xác thực
+  const handleInputChange = (field: keyof typeof errors, value: string) => {
+    // 1. Cập nhật state của trường
+    switch (field) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'message':
+        setMessage(value);
+        break;
+    }
+
+    // 2. Thực hiện xác thực ngay lập tức
+    validateFormForField(field, value);
+  };
+
+  const openLink = (url: string) => {
+    Linking.openURL(url).catch(err => Alert.alert('Lỗi', 'Không thể mở link'));
+  };
+
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        <Text style={styles.title}>📞 Liên Hệ</Text>
+        <Text style={styles.subtitle}>Hãy kết nối với tôi!</Text>
+
+        {/* SOCIAL LINKS */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🔗 Mạng Xã Hội</Text>
+          <View style={styles.socialLinks}>
+            <TouchableOpacity style={styles.socialButton} onPress={() => openLink('https://github.com')}>
+              <Text style={styles.socialText}>🐙 GitHub</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton} onPress={() => openLink('https://linkedin.com')}>
+              <Text style={styles.socialText}>💼 LinkedIn</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton} onPress={() => openLink('mailto:example@email.com')}>
+              <Text style={styles.socialText}>📧 Email</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* CONTACT FORM */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📝 Liên Hệ Với Tôi</Text>
+
+          <CustomTextInput
+            placeholder="Tên của bạn *"
+            value={name}
+            onChangeText={(value) => handleInputChange('name', value)}
+            error={errors.name ? 'Vui lòng nhập tên của bạn' : false}
+          />
+          <CustomTextInput
+            placeholder="Email *"
+            value={email}
+            onChangeText={(value) => handleInputChange('email', value)}
+            keyboardType="email-address"
+            error={
+              errors.email
+                ? (!email.trim() ? 'Vui lòng nhập email' : 'Email không hợp lệ')
+                : false
+            }
+          />
+          <CustomTextInput
+            placeholder="Tin nhắn *"
+            value={message}
+            onChangeText={(value) => handleInputChange('message', value)}
+            multiline={true} // Bật chế độ multiline
+            error={errors.message ? 'Vui lòng nhập tin nhắn' : false}
+          />
+          <CustomButton
+            title="🚀 Gửi Tin Nhắn"
+            onPress={handleSubmitContact}
+            expAmount={30} // Dùng prop expAmount để hiển thị +30 EXP
+            type="primary" // Dùng primary type (màu xanh lá Duolingo)
+          />
+        </View>
+
+        {/* DOWNLOAD CV */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📥 Tải CV</Text>
+          <TouchableOpacity style={styles.downloadButton}>
+            <Text style={styles.downloadButtonText}>📄 Tải CV Của Tôi</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>← Quay Lại</Text>
+      </TouchableOpacity>
+    </View>
   );
-
-  gameState.addExp(30); // EXP cho việc gửi contact
-
-  // Reset form
-  setName('');
-  setEmail('');
-  setMessage('');
-  setErrors({ name: false, email: false, message: false });
- };
-
- // UPDATED: Cập nhật state và gọi hàm xác thực
- const handleInputChange = (field: keyof typeof errors, value: string) => {
-  // 1. Cập nhật state của trường
-  switch (field) {
-   case 'name':
-    setName(value);
-    break;
-   case 'email':
-    setEmail(value);
-    break;
-   case 'message':
-    setMessage(value);
-    break;
-  }
-
-  // 2. Thực hiện xác thực ngay lập tức
-  validateFormForField(field, value);
- };
-
- const openLink = (url: string) => {
-  Linking.openURL(url).catch(err => Alert.alert('Lỗi', 'Không thể mở link'));
- };
-
- return (
-  <View style={styles.container}>
-   <ScrollView>
-    <Text style={styles.title}>📞 Liên Hệ</Text>
-    <Text style={styles.subtitle}>Hãy kết nối với tôi!</Text>
-
-    {/* SOCIAL LINKS */}
-    <View style={styles.section}>
-     <Text style={styles.sectionTitle}>🔗 Mạng Xã Hội</Text>
-     <View style={styles.socialLinks}>
-      <TouchableOpacity style={styles.socialButton} onPress={() => openLink('https://github.com')}>
-       <Text style={styles.socialText}>🐙 GitHub</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.socialButton} onPress={() => openLink('https://linkedin.com')}>
-       <Text style={styles.socialText}>💼 LinkedIn</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.socialButton} onPress={() => openLink('mailto:example@email.com')}>
-       <Text style={styles.socialText}>📧 Email</Text>
-      </TouchableOpacity>
-     </View>
-    </View>
-
-    {/* CONTACT FORM */}
-    <View style={styles.section}>
-     <Text style={styles.sectionTitle}>📝 Liên Hệ Với Tôi</Text>
-
-     <View>
-      <TextInput
-       style={[
-        styles.input,
-        errors.name && styles.inputError
-       ]}
-       placeholder="Tên của bạn *"
-       placeholderTextColor={errors.name ? '#ef4444' : '#8d99ae'}
-       value={name}
-       onChangeText={(value) => handleInputChange('name', value)}
-      />
-      {errors.name && <Text style={styles.errorText}>Vui lòng nhập tên của bạn</Text>}
-     </View>
-
-     <View>
-      <TextInput
-       style={[
-        styles.input,
-        errors.email && styles.inputError
-       ]}
-       placeholder="Email *"
-       placeholderTextColor={errors.email ? '#ef4444' : '#8d99ae'}
-       value={email}
-       onChangeText={(value) => handleInputChange('email', value)}
-       keyboardType="email-address"
-      />
-      {errors.email && (
-       <Text style={styles.errorText}>
-        {!email.trim() ? 'Vui lòng nhập email' : 'Email không hợp lệ'}
-       </Text>
-      )}
-     </View>
-
-     <View>
-      <TextInput
-       style={[
-        styles.input,
-        styles.textArea,
-        errors.message && styles.inputError
-       ]}
-       placeholder="Tin nhắn *"
-       placeholderTextColor={errors.message ? '#ef4444' : '#8d99ae'}
-       value={message}
-       onChangeText={(value) => handleInputChange('message', value)}
-       multiline
-       numberOfLines={4}
-      />
-      {errors.message && <Text style={styles.errorText}>Vui lòng nhập tin nhắn</Text>}
-     </View>
-
-     <TouchableOpacity style={styles.submitButton} onPress={handleSubmitContact}>
-      <Text style={styles.submitButtonText}>🚀 Gửi Tin Nhắn (+30 EXP)</Text>
-     </TouchableOpacity>
-    </View>
-
-    {/* DOWNLOAD CV */}
-    <View style={styles.section}>
-     <Text style={styles.sectionTitle}>📥 Tải CV</Text>
-     <TouchableOpacity style={styles.downloadButton}>
-      <Text style={styles.downloadButtonText}>📄 Tải CV Của Tôi</Text>
-     </TouchableOpacity>
-    </View>
-   </ScrollView>
-
-   <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-    <Text style={styles.backButtonText}>← Quay Lại</Text>
-   </TouchableOpacity>
-  </View>
- );
 };
 
 const styles = StyleSheet.create({
- container: {
-  flex: 1,
-  backgroundColor: '#ffffff',
-  padding: 20,
- },
- title: {
-  fontSize: 32,
-  fontWeight: 'bold',
-  color: '#58cc02',
-  textAlign: 'center',
-  marginBottom: 10,
- },
- subtitle: {
-  fontSize: 18,
-  color: '#666666',
-  textAlign: 'center',
-  marginBottom: 30,
- },
- section: {
-  backgroundColor: '#f8f9fa',
-  padding: 20,
-  borderRadius: 15,
-  marginBottom: 20,
-  borderWidth: 1,
-  borderColor: '#e9ecef',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.05,
-  shadowRadius: 2,
-  elevation: 1,
- },
- sectionTitle: {
-  fontSize: 20,
-  fontWeight: 'bold',
-  color: '#1cb0f6',
-  marginBottom: 15,
- },
- socialLinks: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
- },
- socialButton: {
-  backgroundColor: '#1cb0f6',
-  paddingHorizontal: 20,
-  paddingVertical: 10,
-  borderRadius: 20,
-  shadowColor: '#1cb0f6',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-  elevation: 3,
- },
- socialText: {
-  color: '#ffffff',
-  fontWeight: '600',
- },
- input: {
-  backgroundColor: '#ffffff',
-  color: '#333333',
-  padding: 15,
-  borderRadius: 10,
-  marginBottom: 8,
-  borderWidth: 1,
-  borderColor: '#d1d5db',
-  fontSize: 16,
- },
- inputError: {
-  borderColor: '#ef4444',
-  backgroundColor: '#fef2f2',
-  borderWidth: 2,
- },
- errorText: {
-  color: '#ef4444',
-  fontSize: 12,
-  marginBottom: 12,
-  marginLeft: 5,
-  fontWeight: '500',
- },
- textArea: {
-  height: 100,
-  textAlignVertical: 'top',
- },
- submitButton: {
-  backgroundColor: '#10b981',
-  padding: 15,
-  borderRadius: 25,
-  alignItems: 'center',
-  shadowColor: '#10b981',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-  elevation: 3,
-  marginTop: 10,
- },
- submitButtonText: {
-  color: '#ffffff',
-  fontSize: 16,
-  fontWeight: '600',
- },
- downloadButton: {
-  backgroundColor: '#ff9600',
-  padding: 15,
-  borderRadius: 25,
-  alignItems: 'center',
-  shadowColor: '#ff9600',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-  elevation: 3,
- },
- downloadButtonText: {
-  color: '#ffffff',
-  fontSize: 16,
-  fontWeight: '600',
- },
- backButton: {
-  backgroundColor: '#58cc02',
-  padding: 15,
-  borderRadius: 25,
-  alignItems: 'center',
-  marginTop: 20,
-  shadowColor: '#58cc02',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-  elevation: 3,
- },
- backButtonText: {
-  color: '#ffffff',
-  fontSize: 18,
-  fontWeight: '600',
- },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#58cc02',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  section: {
+    backgroundColor: '#f8f9fa',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1cb0f6',
+    marginBottom: 15,
+  },
+  socialLinks: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  socialButton: {
+    backgroundColor: '#1cb0f6',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    shadowColor: '#1cb0f6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  socialText: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  downloadButton: {
+    backgroundColor: '#ff9600',
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    shadowColor: '#ff9600',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  downloadButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  backButton: {
+    backgroundColor: '#58cc02',
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#58cc02',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  backButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
 });
