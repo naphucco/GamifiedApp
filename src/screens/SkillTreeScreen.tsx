@@ -8,9 +8,16 @@ import { CustomCard } from '../components/ui/CustomCard';
 
 const { width: screenWidth } = Dimensions.get('window');
 const CARD_MARGIN = 12;
-const CARD_WIDTH = (screenWidth - 40 - CARD_MARGIN) / 2;
+const CARD_WIDTH = (screenWidth - 40 - CARD_MARGIN) / 2; // Tính toán chiều rộng card dựa trên màn hình
 
-// Dữ liệu skills phong phú hơn
+// =============================================================================
+// DỮ LIỆU SKILLS VÀ CATEGORIES
+// =============================================================================
+
+/**
+ * Danh mục kỹ năng với màu sắc và icon đại diện
+ * Mỗi category có màu chủ đạo riêng để dễ phân biệt
+ */
 const skillCategories = {
   mobile: { name: '📱 Mobile', color: '#8A2BE2' },
   language: { name: '💬 Languages', color: '#FF6B6B' },
@@ -21,6 +28,16 @@ const skillCategories = {
   database: { name: '💾 Database', color: '#FF8E53' },
 };
 
+/**
+ * Danh sách kỹ năng với đầy đủ thông tin:
+ * - id: định danh duy nhất
+ * - name: tên kỹ năng
+ * - level: cấp độ từ 1-5
+ * - category: thuộc danh mục nào
+ * - description: mô tả ngắn
+ * - xp: kinh nghiệm hiện tại
+ * - nextLevelXp: XP cần để lên level tiếp theo
+ */
 const skills = [
   {
     id: 'react_native',
@@ -114,22 +131,50 @@ const skills = [
   },
 ];
 
+// =============================================================================
+// COMPONENT CHÍNH - SKILL TREE
+// =============================================================================
+
+/**
+ * Component chính hiển thị cây kỹ năng
+ * Cho phép lọc theo category và xem chi tiết từng kỹ năng
+ */
 const SkillTreeComponent = () => {
+  // ===========================================================================
+  // STATE VÀ REF
+  // ===========================================================================
+  
+  /** State lưu category đang được chọn để filter */
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  
+  /** Ref cho animation fade in/out */
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Tính toán các giá trị cần thiết
+  // ===========================================================================
+  // TÍNH TOÁN DỮ LIỆU
+  // ===========================================================================
+  
+  /** Tổng số kỹ năng */
   const totalSkills = skills.length;
+  
+  /** Tổng level của tất cả kỹ năng */
   const totalLevels = skills.reduce((sum, skill) => sum + skill.level, 0);
 
-  // Lọc skills theo category
+  /** Lọc skills theo category đã chọn */
   const filteredSkills = skills.filter(skill => {
     return !selectedCategory || skill.category === selectedCategory;
   });
 
+  // ===========================================================================
+  // EFFECTS VÀ LIFECYCLE
+  // ===========================================================================
+  
+  /** Theo dõi khi component mount và trigger animation */
   useEffect(() => {
+    // Track analytics khi màn hình được xem
     gameState.trackExperienceView();
 
+    // Animation fade in khi màn hình load
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 800,
@@ -137,7 +182,9 @@ const SkillTreeComponent = () => {
     }).start();
   }, []);
 
+  /** Animation khi category filter thay đổi */
   useEffect(() => {
+    // Tạo hiệu ứng fade out -> fade in khi filter thay đổi
     Animated.timing(fadeAnim, {
       toValue: 0.5,
       duration: 200,
@@ -151,14 +198,37 @@ const SkillTreeComponent = () => {
     });
   }, [selectedCategory]);
 
+  // ===========================================================================
+  // HANDLERS
+  // ===========================================================================
+  
+  /**
+   * Xử lý khi người dùng nhấn vào một skill card
+   * @param skillId - ID của kỹ năng được chọn
+   */
   const handleSkillView = (skillId: string) => {
+    // Track analytics cho sự kiện xem kỹ năng
     gameState.trackSkillView(skillId);
+    // Có thể mở rộng: navigation đến màn hình chi tiết skill
   };
 
+  // ===========================================================================
+  // RENDER FUNCTIONS
+  // ===========================================================================
+  
+  /**
+   * Render một skill card
+   * @param skill - Dữ liệu kỹ năng
+   * @returns JSX element của card
+   */
   const renderSkillCard = (skill: typeof skills[0]) => {
     const categoryInfo = skillCategories[skill.category as keyof typeof skillCategories];
     const progressPercentage = (skill.xp / skill.nextLevelXp) * 100;
 
+    /**
+     * Lấy màu sắc dựa trên level
+     * Level 1: Đỏ -> Level 5: Xanh lá
+     */
     const getLevelColor = (level: number) => {
       const colors = ['#FF6B6B', '#FFA726', '#FFCA28', '#66BB6A', '#4CAF50'];
       return colors[level - 1] || colors[0];
@@ -168,28 +238,32 @@ const SkillTreeComponent = () => {
       <View key={skill.id} style={styles.skillCard}>
         <CustomCard
           backgroundColor="#ffffff"
-          borderColor={categoryInfo.color + '20'}
-          shadowColor={categoryInfo.color + '40'}
+          borderColor={categoryInfo.color + '20'} // Màu border với opacity 20%
+          shadowColor={categoryInfo.color + '40'} // Màu shadow với opacity 40%
           borderRadius={16}
-          translateY={6}
+          translateY={6} // Độ nổi của card khi hover
           onPress={() => handleSkillView(skill.id)}
         >
           <View style={styles.skillCardContent}>
+            {/* Header với tên skill và level badge */}
             <View style={styles.skillHeader}>
               <View style={styles.skillTitleContainer}>
                 <Text style={styles.skillName} numberOfLines={1}>
                   {skill.name}
                 </Text>
+                {/* Badge hiển thị level với màu tương ứng */}
                 <View style={[styles.levelBadge, { backgroundColor: getLevelColor(skill.level) }]}>
                   <Text style={styles.levelBadgeText}>Lv.{skill.level}</Text>
                 </View>
               </View>
             </View>
 
+            {/* Mô tả ngắn về kỹ năng */}
             <Text style={styles.skillDescription} numberOfLines={2}>
               {skill.description}
             </Text>
 
+            {/* Progress bar hiển thị tiến trình XP */}
             <View style={styles.progressContainer}>
               <View style={styles.xpInfo}>
                 <Text style={styles.xpText}>{skill.xp} XP</Text>
@@ -201,19 +275,21 @@ const SkillTreeComponent = () => {
                     styles.progressFill,
                     {
                       width: `${progressPercentage}%`,
-                      backgroundColor: categoryInfo.color
+                      backgroundColor: categoryInfo.color // Màu progress theo category
                     }
                   ]}
                 />
               </View>
             </View>
 
+            {/* Tag hiển thị category */}
             <View style={[styles.categoryTag, { backgroundColor: categoryInfo.color + '20' }]}>
               <Text style={[styles.categoryText, { color: categoryInfo.color }]}>
-                {categoryInfo.name.split(' ')[0]}
+                {categoryInfo.name.split(' ')[0]} {/* Chỉ lấy từ đầu tiên của category name */}
               </Text>
             </View>
 
+            {/* Hint cho người dùng */}
             <View style={styles.hintContainer}>
               <Text style={styles.viewHint}>👆 Nhấn để khám phá</Text>
             </View>
@@ -223,7 +299,12 @@ const SkillTreeComponent = () => {
     );
   };
 
+  /**
+   * Render bộ lọc category
+   * @returns JSX element của filter bar
+   */
   const renderCategoryFilter = () => {
+    // Đếm số lượng skill trong mỗi category
     const categoryCounts = skills.reduce((acc, skill) => {
       acc[skill.category] = (acc[skill.category] || 0) + 1;
       return acc;
@@ -231,12 +312,13 @@ const SkillTreeComponent = () => {
 
     return (
       <View style={styles.categoryFilterContainer}>
+        {/* Horizontal scroll cho các category button */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryFilterContent}
         >
-          {/* All Categories Button */}
+          {/* Button "Tất cả" - Reset filter */}
           <TouchableOpacity
             style={[
               styles.categoryButton,
@@ -252,12 +334,12 @@ const SkillTreeComponent = () => {
               🌟 Tất cả
             </Text>
           </TouchableOpacity>
-
-          {/* Category Buttons */}
+          
+          {/* Các category button */}
           {Object.entries(skillCategories).map(([key, category]) => {
             const skillCount = categoryCounts[key] || 0;
             const isActive = selectedCategory === key;
-
+            
             return (
               <TouchableOpacity
                 key={key}
@@ -274,6 +356,7 @@ const SkillTreeComponent = () => {
                 ]}>
                   {category.name}
                 </Text>
+                {/* Hiển thị số lượng skill khi không active */}
                 {!isActive && (
                   <View style={styles.categoryCount}>
                     <Text style={styles.categoryCountText}>{skillCount}</Text>
@@ -283,8 +366,8 @@ const SkillTreeComponent = () => {
             );
           })}
         </ScrollView>
-
-        {/* Skill count badge */}
+        
+        {/* Badge hiển thị số lượng skill đang hiển thị / tổng số */}
         <View style={styles.skillCountBadge}>
           <Text style={styles.skillCountText}>
             {filteredSkills.length}/{totalSkills}
@@ -294,9 +377,13 @@ const SkillTreeComponent = () => {
     );
   };
 
+  // ===========================================================================
+  // RENDER CHÍNH
+  // ===========================================================================
+  
   return (
     <View style={styles.container}>
-      {/* Header đơn giản */}
+      {/* Header với tiêu đề và level tổng */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <Text style={styles.title}>🎯 Cây Kỹ Năng</Text>
@@ -307,7 +394,7 @@ const SkillTreeComponent = () => {
       {/* Bộ lọc category */}
       {renderCategoryFilter()}
 
-      {/* Danh sách skills */}
+      {/* Danh sách skills với scroll */}
       <View style={styles.skillsWrapper}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -322,7 +409,7 @@ const SkillTreeComponent = () => {
                   transform: [{
                     translateY: fadeAnim.interpolate({
                       inputRange: [0, 1],
-                      outputRange: [30, 0],
+                      outputRange: [30, 0], // Animation slide up
                     }),
                   }],
                 }}
@@ -331,7 +418,8 @@ const SkillTreeComponent = () => {
               </Animated.View>
             ))}
           </View>
-
+          
+          {/* Empty state khi không có kỹ năng nào */}
           {filteredSkills.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyStateText}>🎯</Text>
@@ -347,68 +435,84 @@ const SkillTreeComponent = () => {
   );
 };
 
+// Export component với screen transition animation
 export const SkillTreeScreen = withScreenTransition(SkillTreeComponent, 'slideRight');
 
+// =============================================================================
+// STYLES
+// =============================================================================
+
 const styles = StyleSheet.create({
+  /** Container chính */
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  
+  /** Header với background màu xanh */
   header: {
     backgroundColor: '#667eea',
     padding: 20,
     paddingBottom: 20,
   },
+  
+  /** Layout header - tiêu đề và level tổng */
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  
+  /** Tiêu đề chính */
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#ffffff',
-    lineHeight: 34,
+    lineHeight: 34, // Đảm bảo chữ không bị cắt
     textShadowColor: 'rgba(0, 0, 0, 0.1)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
-  totalLevel: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
+  
+  /** Text hiển thị level tổng */
   totalLevelText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#ffffff',
   },
+  
+  /** Container cho bộ lọc category */
   categoryFilterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f8f9fa', // Màu nền xám nhạt
     borderBottomWidth: 1,
     borderBottomColor: '#e9ecef',
   },
+  
+  /** Content container cho horizontal scroll */
   categoryFilterContent: {
     gap: 8,
     paddingRight: 16,
   },
+  
+  /** Button cho mỗi category */
   categoryButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 32,
+    borderRadius: 32, // Bo tròn hoàn toàn
     backgroundColor: '#ffffff',
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
+  
+  /** Style khi category button được chọn */
   categoryButtonActive: {
-    borderWidth: 0,
+    borderWidth: 0, // Ẩn border khi active
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -416,17 +520,23 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 3, // Shadow cho Android
   },
+  
+  /** Text cho category button */
   categoryButtonText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#666666',
   },
+  
+  /** Text khi category button active */
   categoryButtonTextActive: {
     color: '#ffffff',
     fontWeight: '700',
   },
+  
+  /** Badge hiển thị số lượng skill trong category */
   categoryCount: {
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 4,
@@ -436,11 +546,15 @@ const styles = StyleSheet.create({
     minWidth: 16,
     alignItems: 'center',
   },
+  
+  /** Text trong category count badge */
   categoryCountText: {
     fontSize: 10,
     fontWeight: '600',
     color: '#666666',
   },
+  
+  /** Badge hiển thị tổng số skill */
   skillCountBadge: {
     backgroundColor: '#6c757d',
     paddingHorizontal: 8,
@@ -448,86 +562,114 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginLeft: 8,
   },
+  
+  /** Text trong skill count badge */
   skillCountText: {
     fontSize: 10,
     fontWeight: 'bold',
     color: '#ffffff',
   },
+  
+  /** Wrapper cho danh sách skills */
   skillsWrapper: {
-    flex: 1,
+    flex: 1, // Chiếm toàn bộ không gian còn lại
   },
+  
+  /** Content container cho scroll view */
   skillsContent: {
     padding: 16,
     paddingBottom: 20,
   },
+  
+  /** Grid layout cho các skill card */
   skillsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
+  
+  /** Container cho mỗi skill card */
   skillCard: {
     width: CARD_WIDTH,
-    marginBottom: 18,
+    marginBottom: 18, // Khoảng cách giữa các hàng card
   },
+  
+  /** Content bên trong skill card */
   skillCardContent: {
     width: '100%',
     padding: 10,
     alignItems: 'flex-start',
-    minHeight: 160,
+    minHeight: 160, // Đảm bảo chiều cao tối thiểu cho tất cả card
   },
+  
+  /** Header của skill card (tên và level) */
   skillHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     marginBottom: 6,
   },
-  skillIcon: {
-    fontSize: 16,
-    marginRight: 6,
-  },
+  
+  /** Container cho tiêu đề skill */
   skillTitleContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  
+  /** Tên skill */
   skillName: {
     fontSize: 13,
     fontWeight: 'bold',
     color: '#333333',
-    flex: 1,
+    flex: 1, // Chiếm không gian còn lại
   },
+  
+  /** Badge hiển thị level */
   levelBadge: {
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: 8,
     marginLeft: 4,
   },
+  
+  /** Text trong level badge */
   levelBadgeText: {
     fontSize: 9,
     fontWeight: 'bold',
     color: '#ffffff',
   },
+  
+  /** Mô tả skill */
   skillDescription: {
     fontSize: 10,
     color: '#666666',
     marginBottom: 10,
     lineHeight: 12,
   },
+  
+  /** Container cho progress bar */
   progressContainer: {
     width: '100%',
     marginBottom: 6,
   },
+  
+  /** Thông tin XP (hiện tại và mục tiêu) */
   xpInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 3,
   },
+  
+  /** Text hiển thị XP */
   xpText: {
     fontSize: 9,
     color: '#888888',
     fontWeight: '500',
   },
+  
+  /** Progress bar background */
   progressBar: {
     height: 5,
     width: '100%',
@@ -535,21 +677,29 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     overflow: 'hidden',
   },
+  
+  /** Phần fill của progress bar */
   progressFill: {
     height: '100%',
     borderRadius: 3,
   },
+  
+  /** Tag hiển thị category */
   categoryTag: {
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
     marginBottom: 6,
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-start', // Chỉ chiếm không gian cần thiết
   },
+  
+  /** Text trong category tag */
   categoryText: {
     fontSize: 9,
     fontWeight: '600',
   },
+  
+  /** Container cho hint text */
   hintContainer: {
     width: '100%',
     alignItems: 'center',
@@ -557,26 +707,36 @@ const styles = StyleSheet.create({
     borderTopColor: '#f0f0f0',
     paddingTop: 6,
   },
+  
+  /** Hint text hướng dẫn người dùng */
   viewHint: {
     fontSize: 9,
     color: '#999999',
     fontStyle: 'italic',
   },
+  
+  /** Empty state khi không có kỹ năng */
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 40,
   },
+  
+  /** Icon empty state */
   emptyStateText: {
     fontSize: 40,
     marginBottom: 12,
   },
+  
+  /** Tiêu đề empty state */
   emptyStateTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333333',
     marginBottom: 6,
   },
+  
+  /** Mô tả empty state */
   emptyStateDescription: {
     fontSize: 12,
     color: '#666666',
