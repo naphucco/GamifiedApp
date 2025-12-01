@@ -144,6 +144,8 @@ const SkillTreeComponent = () => {
   // STATE VÀ REF
   // ===========================================================================
   
+  const navigation = useNavigation<any>();
+
   /** State lưu category đang được chọn để filter */
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
@@ -209,7 +211,7 @@ const SkillTreeComponent = () => {
   const handleSkillView = (skillId: string) => {
     // Track analytics cho sự kiện xem kỹ năng
     gameState.trackSkillView(skillId);
-    // Có thể mở rộng: navigation đến màn hình chi tiết skill
+    navigation.navigate('SkillDetail', { skillId });
   };
 
   // ===========================================================================

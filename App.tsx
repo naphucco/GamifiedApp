@@ -7,6 +7,7 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { ExperienceDetailScreen } from './src/screens/ExperienceDetailScreen';
 import { AppNavigator } from './src/components/game/AppNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
+import { SkillDetailScreen } from './src/screens/SkillDetailComponent';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,7 @@ function App() {
           <Stack.Screen name="MainApp" component={AppNavigator} />
           {/* Giữ lại các screen cần navigation stack riêng */}
           <Stack.Screen name="ExperienceDetail" component={ExperienceDetailScreen} />
+          <Stack.Screen name="SkillDetail" component={SkillDetailScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

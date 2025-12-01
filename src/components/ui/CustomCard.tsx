@@ -9,7 +9,7 @@ interface CustomCardProps {
   /** Content to be rendered inside the card */
   children: ReactNode;
   /** Callback function when card is pressed */
-  onPress: () => void;
+  onPress?: () => void;
   /** Background color of the card */
   backgroundColor: string;
   /** Color of the shadow layer (optional) */
